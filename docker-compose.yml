@@ -1,0 +1,25 @@
+services:
+  eureka:
+    image: eureka
+    ports:
+      - "8761:8761"
+
+  product-service:
+    image: productapp:latest
+    environment:
+      - EUREKA_URL=http://eureka:8761/eureka
+    ports:
+      - "7000"
+    depends_on:
+      - eureka
+
+  order-service:
+    image: orderapp:latest
+    environment:
+      - PRODUCT_URL=http://product-service:7000/products
+      - EUREKA_URL=http://eureka:8761/eureka
+    ports:
+      - "8000:8000"
+    depends_on:
+      - eureka
+      - product-service
